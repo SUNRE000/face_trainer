@@ -4,12 +4,53 @@ import os
 # --- 設定頁面 ---
 st.set_page_config(page_title="面相訓練器", layout="centered")
 
-# --- CSS樣式 ---
+# --- CSS樣式優化 (針對深色模式 + 白色按鈕框) ---
 st.markdown("""
     <style>
-    .stButton>button { width: 100%; border-radius: 10px; height: 3em; font-size: 20px; }
-    .info-box { background-color: #f0f2f6; padding: 20px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid #4e8cff; }
-    .reveal-text { font-size: 1.2em; font-weight: bold; }
+    /* 1. 設定全域文字為白色 (針對深色背景) */
+    h1, h2, h3, p, span, div, label {
+        color: #ffffff;
+    }
+
+    /* 2. 特別指定按鈕樣式 (白色邊框 + 白色文字) */
+    .stButton > button {
+        width: 100%;
+        border-radius: 10px;
+        height: 3em;
+        font-size: 20px;
+        
+        /* 關鍵修改：白色邊框與文字 */
+        border: 2px solid #ffffff !important; 
+        color: #ffffff !important;
+        background-color: transparent !important; /* 背景透明 */
+    }
+
+    /* 3. 按鈕滑鼠懸停效果 (變成白底黑字，增加互動感) */
+    .stButton > button:hover {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border-color: #ffffff !important;
+    }
+    
+    /* 4. 資訊框樣式 (因為是淺灰底，所以字要強制改回黑色) */
+    .info-box {
+        background-color: #f0f2f6;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border-left: 5px solid #4e8cff;
+    }
+    
+    /* 強制資訊框內的文字變回黑色，不然會被全域設定蓋過去 */
+    .info-box, .info-box p, .info-box span, .info-box div {
+        color: #000000 !important;
+    }
+
+    .reveal-text {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #2c3e50 !important; /* 深藍色強調 */
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -60,7 +101,8 @@ st.title("🧐 面相觀察訓練器")
 # 顯示圖片 (自動處理 GitHub 路徑問題)
 img_path = person["image_path"]
 if os.path.exists(img_path):
-    st.image(img_path, use_container_width=True)
+    # 如果你想要圖片自動填滿寬度
+    st.image(img_path, width="stretch")
 else:
     st.error(f"找不到圖片：{img_path}，請檢查檔名是否正確。")
 
